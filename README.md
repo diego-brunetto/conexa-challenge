@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Rick & Morty Explorer
 
-## Getting Started
+Aplicación construida con Next.js 15 y React 19 que permite explorar personajes de la serie Rick & Morty, seleccionar dos personajes y comparar los episodios en los que aparecen.
+El proyecto hace uso de React Server Components (RSC) para optimizar performance y consumo de datos.
 
-First, run the development server:
+🚀 Stack Tecnológico
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
+Next.js 15 (App Router + RSC)
+
+React 19
+
+TypeScript
+
+TailwindCSS para estilos
+
+shadcn/ui para componentes base
+
+Rick & Morty API → rickandmortyapi.com
+
+📦 Instalación y ejecución
+
+Cloná el repositorio:
+
+git clone <repo_url>
+cd <repo>
+
+
+Instalá dependencias (usa el gestor que prefieras, aquí pnpm como ejemplo):
+
+pnpm install
+
+
+Ejecutá en desarrollo:
+
 pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Compilá para producción:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+pnpm build
+pnpm start
 
-## Learn More
+🏗️ Decisiones de Arquitectura
 
-To learn more about Next.js, take a look at the following resources:
+El proyecto sigue una estructura modular clara:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+/app         → rutas y server components
+/components → componentes UI reutilizables
+/hooks      → hooks de lógica de negocio
+/lib        → capa de API y tipados
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+🔹 Fetching de datos
 
-## Deploy on Vercel
+Characters (server-side): se cargan mediante React Server Components para aprovechar caching y performance.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Episodes (client-side): se consultan dinámicamente al seleccionar personajes, ya que dependen de la interacción del usuario.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+🔹 API Layer
+
+La API está centralizada en /lib/api.ts como funciones puras en lugar de clases, para una integración más natural con RSC y mejorar testabilidad.
