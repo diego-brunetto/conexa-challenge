@@ -143,17 +143,37 @@ pnpm start
 
 ## ✅ Testing y Calidad
 
-* **Estructura preparada** con directorio `components/__test__/`
-* **ESLint + Next.js** configurado para calidad de código
-* **TypeScript estricto** para prevención de errores
+El proyecto cuenta con una **suite completa de unit tests** que cubre los componentes y lógica de negocio críticos:
 
-### Tests recomendados:
+### Cobertura de Tests
 
-* **Unit tests:**
-  * `api.ts`: mocks de fetch para `getMultipleEpisodes`
-  * `use-episodes.ts`: categorización de episodios
-  * Componentes presentacionales: `CharacterCard`, `EpisodeCard`
+* **Jest + React Testing Library** configurado con TypeScript
+* **45 tests** distribuidos en **9 test suites**
+* **Componentes UI:** Todos los componentes principales testeados con focus en funcionalidad del usuario
+* **Hooks de negocio:** `use-episodes` (categorización) y `use-character-selection` (paginación/API)
+* **Mocks inteligentes:** API calls, Next.js navigation, localStorage
+* **Buenas prácticas:** `data-testid` para elementos específicos, `getByText` para contenido del usuario
 
-* **Integration tests:**
-  * Flujo completo: seleccionar 2 personajes → ver episodios categorizados
-  * Navegación entre páginas con estado persistente
+### Comandos de Testing
+
+```bash
+# Ejecutar todos los tests
+pnpm test
+
+# Tests en modo watch
+pnpm test:watch
+
+# Tests con coverage
+pnpm test:coverage
+```
+
+### Estructura de Testing
+
+```
+/components/__tests__/  → tests de componentes UI
+/hooks/__tests__/       → tests de hooks de negocio
+/test/                  → utilidades y mocks compartidos
+  ├─ test-utils.tsx     → render helper con providers
+  └─ mocks/             → datos mock para tests
+```
+---
