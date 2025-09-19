@@ -9,26 +9,32 @@ import { useEffect, useState } from "react";
  * @returns [value, setValue] tuple
  */
 export function useLocalStorage<T>(key: string, defaultValue: T) {
-	const [value, setValue] = useState<T>(() => {
-		if (typeof window === "undefined") return defaultValue;
+	const [value, setValue] = useState<T>(defaultValue);
+	const [isHydrated, setIsHydrated] = useState(false);
+
+	useEffect(() => {
+		// Mark as hydrated and load from localStorage
+		setIsHydrated(true);
 
 		try {
 			const stored = localStorage.getItem(key);
-			return stored ? JSON.parse(stored) : defaultValue;
-		} catch {
-			return defaultValue;
+			if (stored) {
+				setValue(JSON.parse(stored));
+			}
+		} catch (error) {
+			console.warn(`Failed to load from localStorage key "${key}":`, error);
 		}
-	});
+	}, [key]);
 
 	useEffect(() => {
-		if (typeof window === "undefined") return;
+		if (!isHydrated) return;
 
 		try {
 			localStorage.setItem(key, JSON.stringify(value));
 		} catch (error) {
 			console.warn(`Failed to save to localStorage key "${key}":`, error);
 		}
-	}, [key, value]);
+	}, [key, value, isHydrated]);
 
 	return [value, setValue] as const;
 }
