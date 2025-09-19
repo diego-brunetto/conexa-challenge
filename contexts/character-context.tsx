@@ -1,11 +1,14 @@
 "use client";
 
-import { createContext, type ReactNode, useContext, useState } from "react";
+import { createContext, type ReactNode, useContext } from "react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import { STORAGE_KEYS } from "@/lib/storage-keys";
 import type { Character, SelectedCharacters } from "@/lib/types";
 
 interface CharacterContextType {
 	selectedCharacters: SelectedCharacters;
 	handleCharacterSelect: (character: Character, position: 1 | 2) => void;
+	clearSelection: () => void;
 }
 
 const CharacterContext = createContext<CharacterContextType | undefined>(
@@ -18,7 +21,7 @@ interface CharacterProviderProps {
 
 export function CharacterProvider({ children }: CharacterProviderProps) {
 	const [selectedCharacters, setSelectedCharacters] =
-		useState<SelectedCharacters>({
+		useLocalStorage<SelectedCharacters>(STORAGE_KEYS.SELECTED_CHARACTERS, {
 			character1: null,
 			character2: null,
 		});
@@ -30,9 +33,13 @@ export function CharacterProvider({ children }: CharacterProviderProps) {
 		}));
 	};
 
+	const clearSelection = () => {
+		setSelectedCharacters({ character1: null, character2: null });
+	};
+
 	return (
 		<CharacterContext.Provider
-			value={{ selectedCharacters, handleCharacterSelect }}
+			value={{ selectedCharacters, handleCharacterSelect, clearSelection }}
 		>
 			{children}
 		</CharacterContext.Provider>
