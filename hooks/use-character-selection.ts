@@ -40,7 +40,7 @@ export function useCharacterSelection({
 
 	// Get page from URL params
 	const pageParam =
-		characterPosition === 1 ? URL_PARAMS.PAGE_1 : URL_PARAMS.PAGE_2;
+		characterPosition === 1 ? URL_PARAMS.CHAR_1_PAGE : URL_PARAMS.CHAR_2_PAGE;
 	const page = parseInt(searchParams.get(pageParam) || "1", 10);
 
 	const setPage = useCallback(
