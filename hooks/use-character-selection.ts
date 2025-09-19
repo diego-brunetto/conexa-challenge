@@ -13,7 +13,6 @@ interface UseCharacterSelectionResult {
 	error: Error | null;
 	page: number;
 	setPage: (page: number) => void;
-	refetch: () => Promise<void>;
 }
 
 interface UseCharacterSelectionProps {
@@ -66,16 +65,11 @@ export function useCharacterSelection({
 		}
 	}, []);
 
-	const refetch = useCallback(
-		() => fetchCharacters(page),
-		[fetchCharacters, page],
-	);
-
 	// Only fetch when page changes and not 1 (page 1 data comes from SSR)
 	useEffect(() => {
 		if (page === 1) return;
 		fetchCharacters(page);
 	}, [page, fetchCharacters]);
 
-	return { characters, info, loading, error, page, setPage, refetch };
+	return { characters, info, loading, error, page, setPage };
 }

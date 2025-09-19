@@ -9,7 +9,6 @@ interface UseEpisodesResult {
 	episodes: EpisodeCategories;
 	loading: boolean;
 	error: Error | null;
-	refetch: () => Promise<void>;
 }
 
 export function useEpisodes(
@@ -89,5 +88,5 @@ export function useEpisodes(
 		fetchEpisodes();
 	}, [fetchEpisodes]);
 
-	return { episodes, loading, error, refetch: fetchEpisodes };
+	return { episodes, loading, error };
 }
