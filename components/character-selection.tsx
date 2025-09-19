@@ -10,13 +10,23 @@ interface CharacterSelectionProps {
 		characters: Character[];
 		info: ApiResponse<Character>["info"] | null;
 	};
+	initial2: {
+		characters: Character[];
+		info: ApiResponse<Character>["info"] | null;
+	};
 }
 
-export function CharacterSelection({ initial }: CharacterSelectionProps) {
+export function CharacterSelection({
+	initial,
+	initial2,
+}: CharacterSelectionProps) {
 	const { selectedCharacters, handleCharacterSelect } = useCharacterContext();
 
-	const cs1 = useCharacterSelection(initial);
-	const cs2 = useCharacterSelection(initial);
+	const cs1 = useCharacterSelection({ initial, characterPosition: 1 });
+	const cs2 = useCharacterSelection({
+		initial: initial2,
+		characterPosition: 2,
+	});
 
 	return (
 		<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
