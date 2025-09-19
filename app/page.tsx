@@ -6,11 +6,12 @@ import { getCharacters } from "@/lib/api";
 export default async function HomePage({
 	searchParams,
 }: {
-	searchParams: { page1?: string; page2?: string };
+	searchParams: Promise<{ page1?: string; page2?: string }>;
 }) {
 	// Get page numbers from URL params, default to 1
-	const page1 = parseInt(searchParams.page1 || "1", 10);
-	const page2 = parseInt(searchParams.page2 || "1", 10);
+	const searchParamsResult = await searchParams;
+	const page1 = parseInt(searchParamsResult.page1 || "1", 10);
+	const page2 = parseInt(searchParamsResult.page2 || "1", 10);
 
 	// Fetch characters for both sections in parallel
 	const [characters1, characters2] = await Promise.all([
