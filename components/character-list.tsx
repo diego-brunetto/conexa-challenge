@@ -30,22 +30,30 @@ export function CharacterList({
 }: CharacterListProps) {
 	return (
 		<Card
+			data-testid="character-list"
 			className={cn(
 				"h-fit transition-all duration-300",
 				selectedCharacter && "portal-glow",
 			)}
 		>
 			<CardHeader className="pb-4">
-				<CardTitle className="text-lg font-bold text-center rick-morty-gradient bg-clip-text text-transparent">
+				<CardTitle
+					data-testid="character-list-title"
+					className="text-lg font-bold text-center rick-morty-gradient bg-clip-text text-transparent"
+				>
 					{title}
 				</CardTitle>
 			</CardHeader>
 			<CardContent className="space-y-4">
-				<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 min-h-[1200px]">
+				<div
+					data-testid="characters-grid"
+					className="grid grid-cols-1 sm:grid-cols-2 gap-3 min-h-[1200px]"
+				>
 					{loading
 						? Array.from({ length: 20 }).map((_, i) => (
 								<div
 									key={i}
+									data-testid={`skeleton-${i}`}
 									className="flex items-center space-x-4 p-4 rounded-lg border animate-pulse"
 								>
 									<Skeleton className="w-16 h-16 rounded-full" />

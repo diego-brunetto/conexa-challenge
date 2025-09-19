@@ -30,6 +30,7 @@ export function CharacterCard({
 
 	return (
 		<Card
+			data-testid="character-card"
 			className={cn(
 				"cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 hover:portal-glow h-fit",
 				isSelected && "ring-2 ring-primary shadow-lg portal-glow sci-fi-border",
@@ -50,6 +51,7 @@ export function CharacterCard({
 							)}
 						/>
 						<div
+							data-testid="character-status"
 							className={cn(
 								"absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white shadow-sm",
 								getStatusColor(character.status),

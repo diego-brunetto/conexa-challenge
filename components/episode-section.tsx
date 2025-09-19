@@ -53,7 +53,10 @@ export function EpisodeSection({
 
 	if (loading) {
 		return (
-			<Card className={cn("transition-all duration-300", getVariantStyles())}>
+			<Card
+				data-testid="loading-skeleton"
+				className={cn("transition-all duration-300", getVariantStyles())}
+			>
 				<CardHeader>
 					<CardTitle className="text-base">{title}</CardTitle>
 				</CardHeader>
@@ -78,6 +81,7 @@ export function EpisodeSection({
 
 	return (
 		<Card
+			data-testid="episode-section"
 			className={cn(
 				"transition-all duration-300 hover:shadow-md",
 				getVariantStyles(),
@@ -106,7 +110,10 @@ export function EpisodeSection({
 						</p>
 					</div>
 				) : (
-					<div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2 gap-3">
+					<div
+						data-testid="episodes-grid"
+						className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2 gap-3"
+					>
 						{(totalPages > 1 ? pagedEpisodes : episodes).map((episode) => (
 							<EpisodeCard key={episode.id} episode={episode} />
 						))}
