@@ -1,0 +1,51 @@
+export interface Character {
+	id: number;
+	name: string;
+	status: "Alive" | "Dead" | "unknown";
+	species: string;
+	type: string;
+	gender: string;
+	origin: {
+		name: string;
+		url: string;
+	};
+	location: {
+		name: string;
+		url: string;
+	};
+	image: string;
+	episode: string[];
+	url: string;
+	created: string;
+}
+
+export interface Episode {
+	id: number;
+	name: string;
+	air_date: string;
+	episode: string;
+	characters: string[];
+	url: string;
+	created: string;
+}
+
+export interface ApiResponse<T> {
+	info: {
+		count: number;
+		pages: number;
+		next: string | null;
+		prev: string | null;
+	};
+	results: T[];
+}
+
+export interface SelectedCharacters {
+	character1: Character | null;
+	character2: Character | null;
+}
+
+export interface EpisodeCategories {
+	character1Only: Episode[];
+	shared: Episode[];
+	character2Only: Episode[];
+}
