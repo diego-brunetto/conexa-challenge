@@ -1,9 +1,9 @@
 /**
  * Centralized storage keys for localStorage
  * Prevents typos and provides a single source of truth
+ * Only for data that should persist between sessions and not be in URL
  */
 export const STORAGE_KEYS = {
-	PAGES: "pages",
 	SELECTED_CHARACTERS: "selected-characters",
 } as const;
 
