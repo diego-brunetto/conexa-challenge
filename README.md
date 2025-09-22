@@ -177,3 +177,17 @@ pnpm test:coverage
   └─ mocks/             → datos mock para tests
 ```
 ---
+
+## 📊 Performance & Speed Insights
+
+La aplicación está optimizada para performance con las siguientes métricas obtenidas de **Vercel Speed Insights**:
+
+![Speed Insights](./vercel-speed-insights.png)
+
+### Optimizaciones implementadas:
+* **Server-side rendering** para carga inicial rápida
+* **Cache inteligente** (1 hora) en datos de personajes
+* **Skeleton loading** para mejor UX percibida
+* **Optimización de imágenes** automática con Next.js
+
+---
