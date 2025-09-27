@@ -1,5 +1,4 @@
 import { act, renderHook } from "@testing-library/react";
-import * as api from "@/lib/api";
 import { mockCharacter1, mockCharacter2 } from "@/test/mocks/api-data";
 import { useCharacterSelection } from "../use-character-selection";
 
@@ -12,12 +11,7 @@ jest.mock("next/navigation", () => ({
 	useSearchParams: () => mockSearchParams,
 }));
 
-// Mock API module
-jest.mock("@/lib/api");
-
 describe("useCharacterSelection", () => {
-	const mockGetCharacters = jest.mocked(api.getCharacters);
-
 	const mockInitial = {
 		characters: [mockCharacter1],
 		info: { count: 1, pages: 5, next: null, prev: null },
@@ -25,7 +19,6 @@ describe("useCharacterSelection", () => {
 
 	beforeEach(() => {
 		mockPush.mockClear();
-		mockGetCharacters.mockClear();
 		mockSearchParams.forEach((_, key) => mockSearchParams.delete(key));
 	});
 
@@ -69,7 +62,7 @@ describe("useCharacterSelection", () => {
 		expect(result.current.page).toBe(2);
 	});
 
-	it("updates URL when setPage is called", () => {
+	it("updates URL when setPage is called for character position 1", () => {
 		const { result } = renderHook(() =>
 			useCharacterSelection({
 				initial: mockInitial,
@@ -84,45 +77,22 @@ describe("useCharacterSelection", () => {
 		expect(mockPush).toHaveBeenCalledWith("?char-1-page=3", { scroll: false });
 	});
 
-	it("fetches characters when page changes (not page 1)", async () => {
-		mockGetCharacters.mockResolvedValue({
-			results: [mockCharacter2],
-			info: { count: 1, pages: 5, next: null, prev: null },
-		});
-
-		mockSearchParams.set("char-1-page", "2");
-
-		renderHook(() =>
+	it("updates URL when setPage is called for character position 2", () => {
+		const { result } = renderHook(() =>
 			useCharacterSelection({
 				initial: mockInitial,
-				characterPosition: 1,
+				characterPosition: 2,
 			}),
 		);
 
-		// Wait for useEffect to run
-		await act(async () => {
-			await new Promise((resolve) => setTimeout(resolve, 0));
+		act(() => {
+			result.current.setPage(4);
 		});
 
-		expect(mockGetCharacters).toHaveBeenCalledWith(2);
+		expect(mockPush).toHaveBeenCalledWith("?char-2-page=4", { scroll: false });
 	});
 
-	it("does not fetch for page 1 (SSR data)", () => {
-		renderHook(() =>
-			useCharacterSelection({
-				initial: mockInitial,
-				characterPosition: 1,
-			}),
-		);
-
-		expect(mockGetCharacters).not.toHaveBeenCalled();
-	});
-
-	it("handles API errors", async () => {
-		const error = new Error("API Error");
-		mockGetCharacters.mockRejectedValue(error);
-		mockSearchParams.set("char-1-page", "2");
-
+	it("sets loading state when navigating", () => {
 		const { result } = renderHook(() =>
 			useCharacterSelection({
 				initial: mockInitial,
@@ -130,11 +100,46 @@ describe("useCharacterSelection", () => {
 			}),
 		);
 
-		// Wait for error to be set
-		await act(async () => {
-			await new Promise((resolve) => setTimeout(resolve, 100));
+		act(() => {
+			result.current.setPage(2);
 		});
 
-		expect(result.current.error).toEqual(error);
+		expect(result.current.loading).toBe(true);
+	});
+
+	it("updates state when initial prop changes (server navigation)", () => {
+		const { result, rerender } = renderHook(
+			({ initial }) =>
+				useCharacterSelection({
+					initial,
+					characterPosition: 1,
+				}),
+			{
+				initialProps: { initial: mockInitial },
+			},
+		);
+
+		// Initial state
+		expect(result.current.characters).toEqual([mockCharacter1]);
+		expect(result.current.loading).toBe(false);
+
+		// Simulate navigation by setting loading state
+		act(() => {
+			result.current.setPage(2);
+		});
+		expect(result.current.loading).toBe(true);
+
+		// Simulate server response with new data
+		const newInitial = {
+			characters: [mockCharacter2],
+			info: { count: 2, pages: 5, next: null, prev: null },
+		};
+
+		rerender({ initial: newInitial });
+
+		// State should update with new data and loading should be false
+		expect(result.current.characters).toEqual([mockCharacter2]);
+		expect(result.current.info).toEqual(newInitial.info);
+		expect(result.current.loading).toBe(false);
 	});
 });
