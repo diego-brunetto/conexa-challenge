@@ -2,7 +2,6 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { getCharacters } from "@/lib/api";
 import type { ApiResponse, Character } from "@/lib/types";
 import { URL_PARAMS } from "@/lib/url-params";
 
@@ -10,7 +9,6 @@ interface UseCharacterSelectionResult {
 	characters: Character[];
 	info: ApiResponse<Character>["info"] | null;
 	loading: boolean;
-	error: Error | null;
 	page: number;
 	setPage: (page: number) => void;
 }
@@ -34,8 +32,14 @@ export function useCharacterSelection({
 	const [info, setInfo] = useState<ApiResponse<Character>["info"] | null>(
 		initial.info,
 	);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<Error | null>(null);
+	const [isNavigating, setIsNavigating] = useState(false);
+
+	// Update state when initial prop changes (server-side navigation)
+	useEffect(() => {
+		setCharacters(initial.characters);
+		setInfo(initial.info);
+		setIsNavigating(false);
+	}, [initial.characters, initial.info]);
 
 	// Get page from URL params
 	const pageParam =
@@ -44,6 +48,7 @@ export function useCharacterSelection({
 
 	const setPage = useCallback(
 		(newPage: number) => {
+			setIsNavigating(true);
 			const params = new URLSearchParams(searchParams);
 			params.set(pageParam, newPage.toString());
 			router.push(`?${params.toString()}`, { scroll: false });
@@ -51,25 +56,5 @@ export function useCharacterSelection({
 		[router, searchParams, pageParam],
 	);
 
-	const fetchCharacters = useCallback(async (pageNumber: number) => {
-		setLoading(true);
-		setError(null);
-		try {
-			const response = await getCharacters(pageNumber);
-			setCharacters(response.results);
-			setInfo(response.info);
-		} catch (err) {
-			setError(err as Error);
-		} finally {
-			setLoading(false);
-		}
-	}, []);
-
-	// Only fetch when page changes and not 1 (page 1 data comes from SSR)
-	useEffect(() => {
-		if (page === 1) return;
-		fetchCharacters(page);
-	}, [page, fetchCharacters]);
-
-	return { characters, info, loading, error, page, setPage };
+	return { characters, info, loading: isNavigating, page, setPage };
 }
